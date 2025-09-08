@@ -1,4 +1,4 @@
-import { SearchIcon } from "lucide-react";
+import { EyeIcon, FootprintsIcon, SearchIcon } from "lucide-react";
 import Header from "./_components/header";
 import { Input } from "./_components/ui/input";
 import { Button } from "./_components/ui/button";
@@ -25,11 +25,38 @@ export default async function Home() {
         <h2 className="text-xl font-bold">Olá, Guilherme</h2>
         <p>Segunda-feira, 08 de setembro</p>
 
-        <div className="flex items-center gap-2 mt-6">
+        <div className="flex items-center gap-2 my-6">
           <Input placeholder="Faça sua busca " />
 
           <Button>
             <SearchIcon />
+          </Button>
+        </div>
+
+        <div className="flex gap-3 overflow-x-scroll [&::-webkit-scrollbar]:hidden">
+          <Button className="gap-2" variant="secondary">
+            <Image src="/scissors.svg" width={16} height={16} alt="Cabelo"/>
+            Cabelo
+          </Button>
+
+          <Button className="gap-2" variant="secondary">
+            <Image src="/mustache.svg" width={16} height={16} alt="Barba"/>
+            Barba
+          </Button>
+
+          <Button className="gap-2" variant="secondary">
+            <Image src="/razor.svg" width={16} height={16} alt="Acabamento"/>
+            Acabamento
+          </Button>
+
+          <Button className="gap-2" variant="secondary">
+            <FootprintsIcon size={16} />
+            Pézinho
+          </Button>
+
+          <Button className="gap-2" variant="secondary">
+            <EyeIcon size={16} />
+            Sobranchelha
           </Button>
         </div>
 
@@ -87,7 +114,6 @@ export default async function Home() {
         <Card className="py-6 px-5">
           <CardContent>
             <p className="text-sm text-gray-400">© { new Date().getFullYear() } Copyright <span className="font-bold">FSW Barber</span>.</p>
-
           </CardContent>
         </Card>
       </footer>
