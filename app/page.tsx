@@ -11,6 +11,11 @@ import BarberShopItem from "./_components/barbershop-item";
 
 export default async function Home() {
   const barbershops = await prisma.barbershop.findMany({});
+  const popularBarbershops = await prisma.barbershop.findMany({
+    orderBy: {
+      name: 'desc'
+    }
+  });
 
   return (
     <>
@@ -62,6 +67,16 @@ export default async function Home() {
         <div className="flex gap-2 overflow-auto [&::-webkit-scrollbar]:hidden">
           {
             barbershops.map(barbershop => 
+              <BarberShopItem key={barbershop.id} barbershop={barbershop} />
+            )
+          }
+        </div>
+
+        <h2 className="uppercase text-xs font-bold text-gray-400 mt-6 mb-3">Populares</h2>
+
+        <div className="flex gap-2 overflow-auto [&::-webkit-scrollbar]:hidden">
+          {
+            popularBarbershops.map(barbershop => 
               <BarberShopItem key={barbershop.id} barbershop={barbershop} />
             )
           }
