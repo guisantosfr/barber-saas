@@ -50,8 +50,18 @@ export default async function Home() {
           </Button>
 
           <Button className="gap-2" variant="secondary">
-            <FootprintsIcon size={16} />
-            Pézinho
+            <Image src="/towel.svg" width={16} height={16} alt="Massagem"/>
+            Massagem
+          </Button>
+
+          <Button className="gap-2" variant="secondary">
+            <Image src="/eyebrow.svg" width={16} height={16} alt="Sobrancelha"/>
+            Sobrancelha
+          </Button>
+
+          <Button className="gap-2" variant="secondary">
+            <Image src="/shampoo.svg" width={16} height={16} alt="Hidratação"/>
+            Hidratação
           </Button>
 
           <Button className="gap-2" variant="secondary">
