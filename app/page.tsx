@@ -9,6 +9,7 @@ import { Badge } from "./_components/ui/badge";
 import { prisma } from "./_lib/prisma";
 import BarberShopItem from "./_components/barbershop-item";
 import { quickSearchoptions } from "./_constants/search";
+import BookingItem from "./_components/booking-item";
 
 export default async function Home() {
   const barbershops = await prisma.barbershop.findMany({});
@@ -43,41 +44,6 @@ export default async function Home() {
               </Button>
             ))
           }
-
-          {/* <Button className="gap-2" variant="secondary">
-            <Image src="/scissors.svg" width={16} height={16} alt="Cabelo" />
-            Cabelo
-          </Button>
-
-          <Button className="gap-2" variant="secondary">
-            <Image src="/mustache.svg" width={16} height={16} alt="Barba" />
-            Barba
-          </Button>
-
-          <Button className="gap-2" variant="secondary">
-            <Image src="/razor.svg" width={16} height={16} alt="Acabamento" />
-            Acabamento
-          </Button>
-
-          <Button className="gap-2" variant="secondary">
-            <Image src="/towel.svg" width={16} height={16} alt="Massagem" />
-            Massagem
-          </Button>
-
-          <Button className="gap-2" variant="secondary">
-            <Image src="/eyebrow.svg" width={16} height={16} alt="Sobrancelha" />
-            Sobrancelha
-          </Button>
-
-          <Button className="gap-2" variant="secondary">
-            <Image src="/shampoo.svg" width={16} height={16} alt="Hidratação" />
-            Hidratação
-          </Button>
-
-          <Button className="gap-2" variant="secondary">
-            <EyeIcon size={16} />
-            Sobranchelha
-          </Button> */}
         </div>
 
         <div className="relative w-full h-[150px] mt-6">
@@ -86,28 +52,7 @@ export default async function Home() {
 
         <h2 className="uppercase text-xs font-bold text-gray-400 mt-6 mb-3">Agendamentos</h2>
 
-        <Card>
-          <CardContent className="flex justify-between p-0">
-            <div className="flex flex-col gap-2 py-5 pl-5">
-              <Badge className="w-fit">Confirmado</Badge>
-              <h3 className="font-semibold">Corte de cabelo</h3>
-
-              <div className="flex items-center gap-2">
-                <Avatar className="w-6 h-6">
-                  <AvatarImage src="https://utfs.io/f/c97a2dc9-cf62-468b-a851-bfd2bdde775f-16p.png"></AvatarImage>
-                </Avatar>
-
-                <p className="text-sm">Barbearia FSW</p>
-              </div>
-            </div>
-
-            <div className="flex flex-col items-center justify-center px-5 border-l-2 border-solid">
-              <p className="text-sm">Setembro</p>
-              <p className="text-2xl">08</p>
-              <p className="text-sm">10:00</p>
-            </div>
-          </CardContent>
-        </Card>
+        <BookingItem />
 
         <h2 className="uppercase text-xs font-bold text-gray-400 mt-6 mb-3">Recomendados</h2>
 
