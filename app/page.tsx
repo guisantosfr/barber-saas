@@ -8,6 +8,7 @@ import { Avatar, AvatarImage } from "./_components/ui/avatar";
 import { Badge } from "./_components/ui/badge";
 import { prisma } from "./_lib/prisma";
 import BarberShopItem from "./_components/barbershop-item";
+import { quickSearchoptions } from "./_constants/search";
 
 export default async function Home() {
   const barbershops = await prisma.barbershop.findMany({});
@@ -34,40 +35,49 @@ export default async function Home() {
         </div>
 
         <div className="flex gap-3 overflow-x-scroll [&::-webkit-scrollbar]:hidden">
-          <Button className="gap-2" variant="secondary">
-            <Image src="/scissors.svg" width={16} height={16} alt="Cabelo"/>
+          {
+            quickSearchoptions.map(option => (
+              <Button className="gap-2" variant="secondary" key={option.title}>
+                <Image src={option.imageUrl} width={16} height={16} alt={option.title} />
+                {option.title}
+              </Button>
+            ))
+          }
+
+          {/* <Button className="gap-2" variant="secondary">
+            <Image src="/scissors.svg" width={16} height={16} alt="Cabelo" />
             Cabelo
           </Button>
 
           <Button className="gap-2" variant="secondary">
-            <Image src="/mustache.svg" width={16} height={16} alt="Barba"/>
+            <Image src="/mustache.svg" width={16} height={16} alt="Barba" />
             Barba
           </Button>
 
           <Button className="gap-2" variant="secondary">
-            <Image src="/razor.svg" width={16} height={16} alt="Acabamento"/>
+            <Image src="/razor.svg" width={16} height={16} alt="Acabamento" />
             Acabamento
           </Button>
 
           <Button className="gap-2" variant="secondary">
-            <Image src="/towel.svg" width={16} height={16} alt="Massagem"/>
+            <Image src="/towel.svg" width={16} height={16} alt="Massagem" />
             Massagem
           </Button>
 
           <Button className="gap-2" variant="secondary">
-            <Image src="/eyebrow.svg" width={16} height={16} alt="Sobrancelha"/>
+            <Image src="/eyebrow.svg" width={16} height={16} alt="Sobrancelha" />
             Sobrancelha
           </Button>
 
           <Button className="gap-2" variant="secondary">
-            <Image src="/shampoo.svg" width={16} height={16} alt="Hidratação"/>
+            <Image src="/shampoo.svg" width={16} height={16} alt="Hidratação" />
             Hidratação
           </Button>
 
           <Button className="gap-2" variant="secondary">
             <EyeIcon size={16} />
             Sobranchelha
-          </Button>
+          </Button> */}
         </div>
 
         <div className="relative w-full h-[150px] mt-6">
@@ -103,7 +113,7 @@ export default async function Home() {
 
         <div className="flex gap-2 overflow-auto [&::-webkit-scrollbar]:hidden">
           {
-            barbershops.map(barbershop => 
+            barbershops.map(barbershop =>
               <BarberShopItem key={barbershop.id} barbershop={barbershop} />
             )
           }
@@ -113,7 +123,7 @@ export default async function Home() {
 
         <div className="flex gap-2 overflow-auto [&::-webkit-scrollbar]:hidden">
           {
-            popularBarbershops.map(barbershop => 
+            popularBarbershops.map(barbershop =>
               <BarberShopItem key={barbershop.id} barbershop={barbershop} />
             )
           }
@@ -123,7 +133,7 @@ export default async function Home() {
       <footer>
         <Card className="py-6 px-5">
           <CardContent>
-            <p className="text-sm text-gray-400">© { new Date().getFullYear() } Copyright <span className="font-bold">FSW Barber</span>.</p>
+            <p className="text-sm text-gray-400">© {new Date().getFullYear()} Copyright <span className="font-bold">FSW Barber</span>.</p>
           </CardContent>
         </Card>
       </footer>
