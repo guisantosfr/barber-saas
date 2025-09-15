@@ -1,3 +1,5 @@
+'use client'
+
 import { Button } from "./ui/button";
 import { CalendarIcon, HomeIcon, LogInIcon, LogOutIcon, MenuIcon } from "lucide-react";
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "./ui/sheet";
@@ -6,15 +8,53 @@ import { Avatar, AvatarImage } from "./ui/avatar";
 import Link from "next/link";
 import Image from "next/image";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
+import { signIn, signOut, useSession } from "next-auth/react";
 
 const Sidebar = () => {
-    return (
-          <SheetContent>
-            <SheetHeader>
-              <SheetTitle className="text-left">Menu</SheetTitle>
-            </SheetHeader>
+  const { data } = useSession();
 
-            <div className="flex items-center justify-between py-5 px-3 border-b border-solid gap-3">
+  const handleLoginWithGoogleClick = async () => {
+    try {
+      const result = await signIn('google', {
+        callbackUrl: window.location.origin,
+        redirect: false
+      })
+
+      if (result?.error) {
+        console.error('Sign-in error:', result.error)
+        // Handle error appropriately
+      }
+    } catch (error) {
+      console.error('Sign-in failed:', error)
+      // Show user-friendly error message
+    }
+  }
+
+  const handleLogout = () => {
+    signOut()
+  }
+
+  return (
+    <SheetContent>
+      <SheetHeader>
+        <SheetTitle className="text-left">Menu</SheetTitle>
+      </SheetHeader>
+
+      <div className="flex items-center justify-between py-5 px-3 border-b border-solid gap-3">
+        {
+          data?.user ? (
+            <div className="flex items-center gap-2">
+              <Avatar>
+                <AvatarImage src={data?.user?.image ?? ""} />
+              </Avatar>
+
+              <div>
+                <p className="font-bold">{data.user.name}</p>
+                <p className="text-sx">{data.user.email}</p>
+              </div>
+            </div>
+          ) : (
+            <>
               <h2 className="font-bold">Olá, faça seu login!</h2>
 
               <Dialog>
@@ -31,7 +71,7 @@ const Sidebar = () => {
 
                   </DialogHeader>
 
-                  <Button variant="outline" className="gap-1 font-bold">
+                  <Button variant="outline" className="gap-1 font-bold" onClick={handleLoginWithGoogleClick}>
                     <Image alt="Fazer login com Google" src="/google.svg" width={18} height={18} />
                     Google
                   </Button>
@@ -39,54 +79,49 @@ const Sidebar = () => {
                 </DialogContent>
               </Dialog>
 
-              {/* <Avatar>
-                <AvatarImage src="https://avatars.githubusercontent.com/u/32960040?v=4" />
-              </Avatar> 
+            </>
+          )
+        }
 
-              <div>
-                <p className="font-bold">Guilherme Santos</p>
-                <p className="text-sx">santosgui678@gmail.com</p>
-              </div>
-                */}
-            </div>
+      </div>
 
-            <div className="flex flex-col gap-2 py-5 border-b border-solid">
-              <SheetClose asChild>
-                <Button className="gap-2 justify-start" variant="ghost" asChild>
-                  <Link href="/">
-                    <HomeIcon size={18} />
-                    Início
-                  </Link>
-                </Button>
-              </SheetClose>
+      <div className="flex flex-col gap-2 py-5 border-b border-solid">
+        <SheetClose asChild>
+          <Button className="gap-2 justify-start" variant="ghost" asChild>
+            <Link href="/">
+              <HomeIcon size={18} />
+              Início
+            </Link>
+          </Button>
+        </SheetClose>
 
-              <Button className="gap-2 justify-start" variant="ghost">
-                <CalendarIcon size={18} />
-                Agendamentos
-              </Button>
-            </div>
+        <Button className="gap-2 justify-start" variant="ghost">
+          <CalendarIcon size={18} />
+          Agendamentos
+        </Button>
+      </div>
 
-            <div className="flex flex-col gap-2 py-5 border-b border-solid">
-              {
-                quickSearchoptions.map(option => (
-                  <Button className="gap-2 justify-start" variant="ghost" key={option.title}>
-                    <Image alt={option.title} src={option.imageUrl} height={18} width={18} />
-                    {option.title}
-                  </Button>
-                ))}
-            </div>
+      <div className="flex flex-col gap-2 py-5 border-b border-solid">
+        {
+          quickSearchoptions.map(option => (
+            <Button className="gap-2 justify-start" variant="ghost" key={option.title}>
+              <Image alt={option.title} src={option.imageUrl} height={18} width={18} />
+              {option.title}
+            </Button>
+          ))}
+      </div>
 
-            <div className="flex flex-col gap-2 py-5 border-b border-solid">
-              <Button className="justify-start gap-2" variant="ghost">
-                <LogOutIcon size={18} />
-                Sair da conta
-              </Button>
+      <div className="flex flex-col gap-2 py-5 border-b border-solid">
+        <Button className="justify-start gap-2" variant="ghost" onClick={handleLogout}>
+          <LogOutIcon size={18} />
+          Sair da conta
+        </Button>
 
-            </div>
+      </div>
 
 
-          </SheetContent>
-    )
+    </SheetContent>
+  )
 }
 
 export default Sidebar;
