@@ -10,6 +10,7 @@ import { prisma } from "./_lib/prisma";
 import BarberShopItem from "./_components/barbershop-item";
 import { quickSearchoptions } from "./_constants/search";
 import BookingItem from "./_components/booking-item";
+import Search from "./_components/search";
 
 export default async function Home() {
   const barbershops = await prisma.barbershop.findMany({});
@@ -27,12 +28,8 @@ export default async function Home() {
         <h2 className="text-xl font-bold">Olá, Guilherme</h2>
         <p>Segunda-feira, 08 de setembro</p>
 
-        <div className="flex items-center gap-2 my-6">
-          <Input placeholder="Faça sua busca " />
-
-          <Button>
-            <SearchIcon />
-          </Button>
+        <div className="my-6">
+          <Search />
         </div>
 
         <div className="flex gap-3 overflow-x-scroll [&::-webkit-scrollbar]:hidden">
