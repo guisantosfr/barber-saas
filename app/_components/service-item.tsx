@@ -1,16 +1,18 @@
 'use client'
 
 import Image from 'next/image';
-import { BarbershopService } from '../generated/prisma';
+import { Barbershop, BarbershopService } from '../generated/prisma';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
-import { Sheet, SheetContent, SheetTitle, SheetTrigger } from './ui/sheet';
+import { Sheet, SheetClose, SheetContent, SheetFooter, SheetTitle, SheetTrigger } from './ui/sheet';
 import { Calendar } from './ui/calendar';
 import { ptBR } from 'date-fns/locale';
 import { useState } from 'react';
+import { format } from 'date-fns';
 
 interface ServiceItemProps {
     service: BarbershopService
+    barbershop: Pick<Barbershop, 'name'>
 }
 
 const TIME_LIST = [
@@ -37,7 +39,7 @@ const TIME_LIST = [
     '18:00',
 ]
 
-const ServiceItem = ({ service }: ServiceItemProps) => {
+const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
     const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
     const [selectedTime, setSelectedTime] = useState<string | undefined>(undefined);
 
@@ -106,22 +108,80 @@ const ServiceItem = ({ service }: ServiceItemProps) => {
 
                                     {
                                         selectedDate && (
-                                            <div className="p-5 flex overflow-x-auto gap-3 [&::-webkit-scrollbar]:hidden">
+                                            <div className="p-5 border-b border-solid flex overflow-x-auto gap-3 [&::-webkit-scrollbar]:hidden">
                                                 {
                                                     TIME_LIST.map(time => (
-                                                        <Button 
-                                                        key={time} 
-                                                        variant={selectedTime === time ? 'default' : 'outline'}
-                                                        className="rounded-full"
-                                                        onClick={() => handleTimeSelected(time)}>
-                                                        {time}
+                                                        <Button
+                                                            key={time}
+                                                            variant={selectedTime === time ? 'default' : 'outline'}
+                                                            className="rounded-full"
+                                                            onClick={() => handleTimeSelected(time)}>
+                                                            {time}
                                                         </Button>
                                                     ))
                                                 }
                                             </div>
                                         )
                                     }
+
+                                    {
+                                        (selectedDate && selectedTime) && (
+                                            <div className="px-5 pt-5 pb-0">
+                                                <Card>
+                                                    <CardContent className="p-3 space-y-3">
+                                                        <div className="flex justify-between items-center">
+                                                            <h2 className="font-bold">{service.name}</h2>
+                                                            <p className="text-sm font-bold">
+                                                                {
+                                                                    Intl.NumberFormat("pt-BR", {
+                                                                        style: "currency",
+                                                                        currency: "BRL",
+                                                                    }).format(Number(service.price))
+                                                                }
+                                                            </p>
+                                                        </div>
+
+                                                        <div className="flex justify-between items-center">
+                                                            <h2 className="text-sm text-gray-400">Data</h2>
+                                                            <p className="text-sm">
+                                                                {
+                                                                    format(selectedDate, "d 'de' MMMM", {
+                                                                        locale: ptBR
+                                                                    }
+                                                                    )
+                                                                }
+                                                            </p>
+                                                        </div>
+
+                                                        <div className="flex justify-between items-center">
+                                                            <h2 className="text-sm text-gray-400">Horário</h2>
+                                                            <p className="text-sm">
+                                                                {
+                                                                    selectedTime
+                                                                }
+                                                            </p>
+                                                        </div>
+
+                                                        <div className="flex justify-between items-center">
+                                                            <h2 className="text-sm text-gray-400">Barbearia</h2>
+                                                            <p className="text-sm">
+                                                                {
+                                                                    barbershop.name
+                                                                }
+                                                            </p>
+                                                        </div>
+                                                    </CardContent>
+                                                </Card>
+                                            </div>
+                                        )
+                                    }
                                 </div>
+
+                                <SheetFooter className='px-5'>
+                                    <SheetClose asChild>
+                                        <Button type="submit">Confirmar</Button>
+                                    </SheetClose>
+                                </SheetFooter>
                             </SheetContent>
                         </Sheet>
                     </div>
