@@ -1,8 +1,8 @@
 'use client'
 
 import { Button } from "./ui/button";
-import { CalendarIcon, HomeIcon, LogInIcon, LogOutIcon, MenuIcon } from "lucide-react";
-import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "./ui/sheet";
+import { CalendarIcon, HomeIcon, LogInIcon, LogOutIcon, } from "lucide-react";
+import { SheetClose, SheetContent, SheetHeader, SheetTitle } from "./ui/sheet";
 import { quickSearchoptions } from "../_constants/search";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import Link from "next/link";
@@ -104,10 +104,14 @@ const Sidebar = () => {
       <div className="flex flex-col gap-2 py-5 border-b border-solid">
         {
           quickSearchoptions.map(option => (
-            <Button className="gap-2 justify-start" variant="ghost" key={option.title}>
-              <Image alt={option.title} src={option.imageUrl} height={18} width={18} />
-              {option.title}
-            </Button>
+            <SheetClose key={option.title} asChild>
+              <Button className="gap-2 justify-start" variant="ghost" asChild>
+                <Link href={`/barbershops?service=${option.title}`}>
+                  <Image alt={option.title} src={option.imageUrl} height={18} width={18} />
+                  {option.title}
+                </Link>
+              </Button>
+            </SheetClose>
           ))}
       </div>
 
