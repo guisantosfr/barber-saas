@@ -9,12 +9,15 @@ export const authOptions: AuthOptions = {
     adapter: PrismaAdapter(prisma) as Adapter,
     providers: [
         GoogleProvider({
-            clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID as string,
-            clientSecret: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET as string
+            clientId: process.env.GOOGLE_CLIENT_ID as string,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+            httpOptions: {
+                timeout: 10000,
+            },
         })
     ],
     callbacks: {
-        async session({ session, user}) {
+        async session({ session, user }) {
             session.user = {
                 ...session.user,
                 id: user.id
@@ -22,5 +25,5 @@ export const authOptions: AuthOptions = {
 
             return session;
         }
-    }
+    },
 }
