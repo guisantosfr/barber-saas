@@ -5,12 +5,7 @@ import { prisma } from "../_lib/prisma"
 import { getServerSession } from "next-auth";
 import { authOptions } from "../_lib/auth";
 
-interface CreateBookingParams {
-    serviceId: string;
-    date: Date
-}
-
-export const createBooking = async (params: CreateBookingParams) => {
+export const deleteBooking = async (bookingId: string) => {
     const user = await getServerSession(authOptions);
 
     if(!user){
@@ -18,10 +13,11 @@ export const createBooking = async (params: CreateBookingParams) => {
     }
 
 
-    await prisma.booking.create({
-        data: {...params, userId: (user.user as any).id }
+    await prisma.booking.delete({
+        where: {
+            id: bookingId
+        }
     })
 
-    revalidatePath('barbershops/[id]');
     revalidatePath('/bookings');
 }
