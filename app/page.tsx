@@ -92,7 +92,11 @@ export default async function Home() {
 
               <div className="flex overflow-x-auto gap-3 [&::-webkit-scrollbar]:hidden">
                 {
-                  bookings.map(booking => <BookingItem key={booking.id} booking={booking} />)
+                  bookings.map(booking => (
+                  <BookingItem 
+                  key={booking.id} 
+                  booking={JSON.parse(JSON.stringify(booking))} />
+                  ))
                 }
               </div>
             </>
