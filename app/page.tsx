@@ -85,13 +85,19 @@ export default async function Home() {
           <Image src="/banner-01.png" fill className="object-cover rounded-xl" alt="Agende nos melhores com FSW Barber" />
         </div>
 
-        <h2 className="uppercase text-xs font-bold text-gray-400 mt-6 mb-3">Agendamentos</h2>
+        {
+          bookings.length > 0 && (
+            <>
+              <h2 className="uppercase text-xs font-bold text-gray-400 mt-6 mb-3">Agendamentos</h2>
 
-        <div className="flex overflow-x-auto gap-3 [&::-webkit-scrollbar]:hidden">
-          {
-            bookings.map(booking => <BookingItem key={booking.id} booking={booking} />)
-          }
-        </div>
+              <div className="flex overflow-x-auto gap-3 [&::-webkit-scrollbar]:hidden">
+                {
+                  bookings.map(booking => <BookingItem key={booking.id} booking={booking} />)
+                }
+              </div>
+            </>
+          )
+        }
 
         <h2 className="uppercase text-xs font-bold text-gray-400 mt-6 mb-3">Recomendados</h2>
 
