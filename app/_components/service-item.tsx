@@ -4,17 +4,18 @@ import Image from 'next/image';
 import { Barbershop, BarbershopService, Booking } from '../generated/prisma';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
-import { Sheet, SheetClose, SheetContent, SheetFooter, SheetTitle, SheetTrigger } from './ui/sheet';
+import { Sheet, SheetClose, SheetContent, SheetFooter, SheetHeader, SheetTitle } from './ui/sheet';
 import { Calendar } from './ui/calendar';
 import { ptBR } from 'date-fns/locale';
 import { useEffect, useMemo, useState } from 'react';
-import { format, isPast, isToday, set } from 'date-fns';
+import { isPast, isToday, set } from 'date-fns';
 import { createBooking } from '../_actions/create-booking';
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 import { getBookings } from '../_actions/get-bookings';
 import { Dialog, DialogContent } from './ui/dialog';
 import SignInDialog from './sign-in-dialog';
+import BookingSummary from './booking-summary';
 
 interface ServiceItemProps {
     service: BarbershopService
@@ -98,6 +99,15 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
         fetchBookings()
     }, [selectedDate, service.id])
 
+    const selectedDateAndTime = useMemo(() => {
+        if (!selectedDate || !selectedTime) return
+        return set(selectedDate, {
+            hours: Number(selectedTime.split(":")[0]),
+            minutes: Number(selectedTime.split(":")[1]),
+        })
+
+    }, [selectedDate, selectedTime])
+
     const handleBookingClick = () => {
         if (data?.user) {
             return setSheetOpen(true)
@@ -123,19 +133,12 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
 
     const handleCreateBooking = async () => {
         try {
-            if (!selectedDate || !selectedTime) return;
-
-            const [hours, minutes] = selectedTime.split(':');
-
-            const newDate = set(selectedDate, {
-                minutes: Number(minutes),
-                hours: Number(hours)
-            })
+            if (!selectedDateAndTime) return;
 
             await createBooking({
                 serviceId: service.id,
                 userId: (data?.user as any).id,
-                date: newDate
+                date: selectedDateAndTime
             })
 
             toast.success('Reserva criada com sucesso')
@@ -146,13 +149,13 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
     }
 
     const timeList = useMemo(() => {
-        if(!selectedDate) return;
+        if (!selectedDate) return;
 
         return getTimeList({
             bookings: dateBookings,
             selectedDate
         })
-    }, [dateBookings, selectedDate]) 
+    }, [dateBookings, selectedDate])
 
     return (
         <>
@@ -181,7 +184,9 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
                                 </Button>
 
                                 <SheetContent className='px-0'>
-                                    <SheetTitle>Fazer Reserva</SheetTitle>
+                                    <SheetHeader>
+                                        <SheetTitle>Fazer Reserva</SheetTitle>
+                                    </SheetHeader>
 
                                     <div className="py-5 border-b border-solid">
                                         <Calendar
@@ -220,68 +225,27 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
                                                 <div className="p-5 border-b border-solid flex overflow-x-auto gap-3 [&::-webkit-scrollbar]:hidden">
                                                     {
                                                         timeList?.length > 0
-                                                        ? timeList.map(time => (
-                                                            <Button
-                                                                key={time}
-                                                                variant={selectedTime === time ? 'default' : 'outline'}
-                                                                className="rounded-full"
-                                                                onClick={() => handleTimeSelected(time)}>
-                                                                {time}
-                                                            </Button>
-                                                        )) : <p className='text-xs'>Não há horários disponíveis para este dia</p>
+                                                            ? timeList.map(time => (
+                                                                <Button
+                                                                    key={time}
+                                                                    variant={selectedTime === time ? 'default' : 'outline'}
+                                                                    className="rounded-full"
+                                                                    onClick={() => handleTimeSelected(time)}>
+                                                                    {time}
+                                                                </Button>
+                                                            )) : <p className='text-xs'>Não há horários disponíveis para este dia</p>
                                                     }
                                                 </div>
                                             )
                                         }
 
                                         {
-                                            (selectedDate && selectedTime) && (
+                                            selectedDateAndTime && (
                                                 <div className="px-5 pt-5 pb-0">
-                                                    <Card>
-                                                        <CardContent className="p-3 space-y-3">
-                                                            <div className="flex justify-between items-center">
-                                                                <h2 className="font-bold">{service.name}</h2>
-                                                                <p className="text-sm font-bold">
-                                                                    {
-                                                                        Intl.NumberFormat("pt-BR", {
-                                                                            style: "currency",
-                                                                            currency: "BRL",
-                                                                        }).format(Number(service.price))
-                                                                    }
-                                                                </p>
-                                                            </div>
-
-                                                            <div className="flex justify-between items-center">
-                                                                <h2 className="text-sm text-gray-400">Data</h2>
-                                                                <p className="text-sm">
-                                                                    {
-                                                                        format(selectedDate, "d 'de' MMMM", {
-                                                                            locale: ptBR
-                                                                        }
-                                                                        )
-                                                                    }
-                                                                </p>
-                                                            </div>
-
-                                                            <div className="flex justify-between items-center">
-                                                                <h2 className="text-sm text-gray-400">Horário</h2>
-                                                                <p className="text-sm">
-                                                                    {
-                                                                        selectedTime
-                                                                    }
-                                                                </p>
-                                                            </div>
-
-                                                            <div className="flex justify-between items-center">
-                                                                <h2 className="text-sm text-gray-400">Barbearia</h2>
-                                                                <p className="text-sm">
-                                                                    {
-                                                                        barbershop.name
-                                                                    }
-                                                                </p>
-                                                            </div>
-                                                        </CardContent>
-                                                    </Card>
+                                                    <BookingSummary
+                                                        barbershop={barbershop}
+                                                        service={service}
+                                                        selectedDate={selectedDateAndTime} />
                                                 </div>
                                             )
                                         }
