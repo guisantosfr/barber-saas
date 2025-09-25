@@ -1,11 +1,6 @@
-import { EyeIcon, FootprintsIcon, SearchIcon } from "lucide-react";
 import Header from "./_components/header";
-import { Input } from "./_components/ui/input";
 import { Button } from "./_components/ui/button";
 import Image from "next/image";
-import { Card, CardContent } from "./_components/ui/card";
-import { Avatar, AvatarImage } from "./_components/ui/avatar";
-import { Badge } from "./_components/ui/badge";
 import { prisma } from "./_lib/prisma";
 import BarberShopItem from "./_components/barbershop-item";
 import { quickSearchoptions } from "./_constants/search";
@@ -16,13 +11,15 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "./_lib/auth";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { getConfirmedBookings } from "./_data/get-confirmed-bookings";
+import { notFound } from "next/navigation";
 
 export default async function Home() {
   const session = await getServerSession(authOptions);
 
-  // if(!session?.user){
-  //     return notFound();
-  // }
+  if(!session?.user){
+      return notFound();
+  }
 
   const barbershops = await prisma.barbershop.findMany({});
   const popularBarbershops = await prisma.barbershop.findMany({
@@ -31,27 +28,7 @@ export default async function Home() {
     }
   });
 
-  const bookings = session?.user ?
-    await prisma.booking.findMany({
-      where: {
-        userId: (session?.user as any).id,
-        date: {
-          gte: new Date()
-        }
-      },
-      include: {
-        service: {
-          include: {
-            barbershop: true
-          }
-        }
-      },
-      orderBy: {
-        date: 'asc'
-      }
-    })
-    :
-    []
+  const bookings = await getConfirmedBookings();
 
   return (
     <>
