@@ -195,7 +195,7 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
                                         <SheetTitle>Fazer Reserva</SheetTitle>
                                     </SheetHeader>
 
-                                    <div className="py-5 border-b border-solid">
+                                    <div className="px-5 py-3 border-b border-solid">
                                         <Calendar
                                             mode="single"
                                             locale={ptBR}

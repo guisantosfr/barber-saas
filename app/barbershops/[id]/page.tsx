@@ -10,13 +10,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 interface BarbershopPageProps {
-    params: {
-        id: string
-    }
+    params: Promise<{ id: string }>
 }
 
 const BarbershopPage = async ({ params }: BarbershopPageProps) => {
-    const { id } = params;
+    const { id } = await params;
 
     const barbershop = await prisma.barbershop.findUnique({
         where: {
