@@ -58,7 +58,7 @@ const getTimeList = ({ bookings, selectedDate }: GetTimeListProps) => {
 
         const timeIsOnPast = isPast(set(new Date(), { hours: Number(hours), minutes: Number(minutes) }))
 
-        if (timeIsOnPast && isToday(selectedDate)) {
+        if (timeIsOnPast && selectedDate && isToday(selectedDate)) {
             return false;
         }
 
@@ -156,7 +156,7 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
     }
 
     const timeList = useMemo(() => {
-        if (!selectedDate) return;
+        if (!selectedDate) return [];
 
         return getTimeList({
             bookings: dateBookings,
