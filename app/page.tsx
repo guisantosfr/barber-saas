@@ -17,10 +17,6 @@ import { notFound } from "next/navigation";
 export default async function Home() {
   const session = await getServerSession(authOptions);
 
-  if(!session?.user){
-      return notFound();
-  }
-
   const barbershops = await prisma.barbershop.findMany({});
   const popularBarbershops = await prisma.barbershop.findMany({
     orderBy: {
