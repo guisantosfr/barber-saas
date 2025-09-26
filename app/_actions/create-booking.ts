@@ -7,7 +7,8 @@ import { authOptions } from "../_lib/auth";
 
 interface CreateBookingParams {
     serviceId: string;
-    date: Date
+    date: Date;
+    userId?: string;
 }
 
 export const createBooking = async (params: CreateBookingParams) => {
